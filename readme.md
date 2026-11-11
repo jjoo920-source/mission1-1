@@ -14,23 +14,23 @@
 | OS | Windows 11 |
 | Shell | Windows PowerShell |
 | Docker | v29.9.3 |
-| Git | v2.x (git --version 결과 기입) |
+| Git | v2.56.0.windows.4 |
 | WSL2 | v3.0.5.0 |
 
 ---
 
 ## 3. 수행 항목 체크리스트
 
-- [x] 터미널 기본 조작 (pwd, ls, mkdir, cd, touch, cat, cp, mv, rm)
-- [x] 파일/디렉토리 권한 확인 및 변경 (chmod)
-- [x] Docker 설치 및 기본 점검
-- [x] Docker 기본 운영 명령 (images, ps, logs, stats)
-- [x] hello-world / ubuntu 컨테이너 실행
-- [x] Dockerfile 기반 커스텀 이미지 제작 (nginx)
-- [x] 포트 매핑 및 브라우저 접속 확인
-- [x] 바인드 마운트 변경 반영 확인
-- [x] Docker 볼륨 영속성 검증
-- [x] Git 설정 및 GitHub 연동
+- [O] 터미널 기본 조작 (pwd, ls, mkdir, cd, touch, cat, cp, mv, rm)
+- [O] 파일/디렉토리 권한 확인 및 변경 (chmod)
+- [O] Docker 설치 및 기본 점검
+- [O] Docker 기본 운영 명령 (images, ps, logs, stats)
+- [O] hello-world / ubuntu 컨테이너 실행
+- [O] Dockerfile 기반 커스텀 이미지 제작 (nginx)
+- [O] 포트 매핑 및 브라우저 접속 확인
+- [O] 바인드 마운트 변경 반영 확인
+- [O] Docker 볼륨 영속성 검증
+- [O] Git 설정 및 GitHub 연동
 
 ---
 
@@ -199,7 +199,11 @@ curl http://localhost:8080
 > `-p 8080:80`은 호스트의 8080 포트를 컨테이너의 80 포트에 연결하여
 > 외부에서 컨테이너 내부 서비스에 접근할 수 있게 한다.
 
-📸 브라우저 접속 화면: `http://localhost:8080` → "Hello, Docker!" 출력 확인
+💻 브라우저 접속 화면: `http://localhost:8080` → "Hello, Docker!" 출력 확인
+
+📸 브라우저 접속 화면:
+
+![포트매핑 접속 확인](images/browser-8080.png)
 
 ---
 
