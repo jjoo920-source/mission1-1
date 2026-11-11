@@ -32,8 +32,8 @@
 
 | 항목 | 버전/정보 |
 |------|----------|
-| OS | Windows 11 |
-| Shell | Windows PowerShell |
+| OS | Windows 11 + WSL2 |
+| Shell | Bash (WSL2) |
 | Docker | v29.9.3 |
 | Git | v2.56.0.windows.4 |
 | WSL2 | v3.0.5.0 |
