@@ -32,11 +32,13 @@
 
 | 항목 | 버전/정보 |
 |------|----------|
-| OS | Windows 11 + WSL2 |
-| Shell | Bash (WSL2) |
+| OS | Ubuntu 22.04 |
+| Shell | Bash |
 | Docker | v29.9.3 |
-| Git | v2.56.0.windows.4 |
+| Git | v2.34.1 |
 | WSL2 | v3.0.5.0 |
+
+![버전 사진](images/3-1.png)
 
 ---
 
@@ -55,133 +57,54 @@
 
 ---
 
-## 5. 터미널 조작 로그
+## 4. 검증 방법
 
-    # 현재 위치 확인
-    pwd
-    # C:\Users\[USERNAME]\Desktop\mission1-1
-    # ⚠️ 경로 중 [USERNAME] 부분은 본인의 Windows 사용자명으로 대체하세요.
+### 4-1. 터미널 조작 로그
 
-    # 목록 확인 (숨김 파일 포함)
-    ls -al
-
-    # 디렉토리 생성 및 이동
-    mkdir test-dir
-    cd test-dir
-
-    # 파일 생성 및 내용 확인
-    touch test.txt
-    echo "hello" > test.txt
-    cat test.txt
-    # hello
-
-    # 내용 수정 확인
-    echo "gello" > test.txt
-    cat test.txt
-    # gello
-
-    # 복사, 이름변경, 삭제
-    cp test.txt test-copy.txt
-    mv test-copy.txt renamed.txt
-    rm renamed.txt
+    # 현재 위치 확인, 목록 확인(숨김 파일 포함), 이동, 생성, 
+      복사, 이동/이름변경, 삭제
+    
+![터미널 조작 로그](images/4-1-1.png)
 
 ---
 
-## 6. 권한 실습
+### 4-2. 권한 실습
 
-    # 파일 권한 확인 (초기 상태)
-    ls -l test.txt
-    # -rw-r--r-- (644)
-
-    # 777로 변경
-    chmod 777 test.txt
-    ls -l test.txt
-    # -rwxrwxrwx (777)
-
-    # 755로 변경
-    chmod 755 test.txt
-    ls -l test.txt
-    # -rwxr-xr-x (755)
-
-    # 디렉토리 권한 확인
-    ls -ld test-dir
-    # drwxr-xr-x (755)
-
-### 권한 표기 해석
-| 표기 | 의미 |
-|------|------|
-| 755 | 소유자: rwx / 그룹: r-x / 기타: r-x |
-| 644 | 소유자: rw- / 그룹: r-- / 기타: r-- |
-| 777 | 소유자: rwx / 그룹: rwx / 기타: rwx |
-
-### 숫자 권한 계산 방법
-| 문자 | 의미 | 숫자 값 |
-|------|------|---------|
-| r | 읽기 (read) | 4 |
-| w | 쓰기 (write) | 2 |
-| x | 실행 (execute) | 1 |
-| - | 권한 없음 | 0 |
-
-> 예시
-> rwx = 4 + 2 + 1 = 7
-> r-x = 4 + 0 + 1 = 5
-> rw- = 4 + 2 + 0 = 6
-> 755 = 소유자(rwx=7) / 그룹(r-x=5) / 기타(r-x=5)
+    # 파일 권한 확인, 변경
+![파일 권한 변경](images/4-2-1.png)
+    
+    # 디렉토리 권한 확인, 변경
+![디렉토리 권한 변경](images/4-2-2.png)
 
 ---
 
-## 7. Docker 설치 및 기본 점검
+### 4-3. Docker 설치 및 기본 점검
 
-    # 버전 확인
-    docker --version
-    # Docker version 29.9.3
-
-    # 데몬 동작 확인
-    docker info
-    # Server Version: 29.9.3
-    # Storage Driver: overlay2
-
-    # 이미지 목록
-    docker images
-    # REPOSITORY   TAG       IMAGE ID       CREATED        SIZE
-    # nginx        latest    ...
-
-    # 전체 컨테이너 목록
-    docker ps -a
-
-    # 로그 확인
-    docker logs my-web
-
-    # 리소스 확인
-    docker stats --no-stream
+    # 버전 확인, 데몬 동작 확인
+![Docker 확인](images/4-3-1.png)
 
 ---
 
-## 8. 컨테이너 실행 실습
+### 4-4. Docker 기본 운영 명령 수행
 
-### hello-world
+    # 이미지 다운로드/목록 확인, 컨테이너 목록 확인
+![4-4-1](images/4-4-1.png)
 
-    docker run hello-world
-    # Hello from Docker!
-    # This message shows that your installation appears to be working correctly.
+    # 로그 확인, 리소스 확인
+![4-4-2](images/4-4-2.png)    
 
-### ubuntu 내부 진입
+---
 
-    docker run -it ubuntu bash
+### 4-5. 컨테이너 실행 실습
 
-    # 컨테이너 내부 명령 실행
-    ls
-    # bin  boot  dev  etc  home  lib ...
-
-    pwd
-    # /
-
-    lsb_release -a
-    # Ubuntu 22.04 LTS
-
-    exit
-
+    # hello-world 실행
+![4-5-1](images/4-5-1.png)
+    
+    # ubuntu 컨테이너 실행 후 간단 명령
+![4-5-2](images/4-5-2.png)
+    
 ### attach vs exec 차이
+
 | 구분 | attach | exec |
 |------|--------|------|
 | 연결 대상 | 메인 프로세스(PID 1) | 새 프로세스 |
@@ -190,116 +113,31 @@
 
 ---
 
-## 9. Dockerfile 기반 커스텀 이미지
+### 4-6. Dockerfile 기반 커스텀 이미지
 
-베이스 이미지: nginx:latest
-커스텀 포인트: 정적 HTML 파일 교체
+    # 이미지 베이스
+![4-6-2](images/4-6-2.png)
+    
+    # 내가 적용한 커스텀 포인트
+![4-6-3](images/4-6-3.png)
 
-app/index.html
+    # 빌드/실행 명령 + 핵심 결과
+![4-6-4](images/4-6-4.png)
+![4-6-1](images/4-6-1.png)
+![4-6-5](images/4-6-5.png)
 
-    <h1>Hello, Docker!</h1>
-
-Dockerfile
-
-    FROM nginx:latest
-    COPY app/ /usr/share/nginx/html
-    EXPOSE 80
-
-    # 이미지 빌드
-    docker build -t my-nginx .
-    # Successfully built xxxxxxxx
-    # Successfully tagged my-nginx:latest
-
-    # 컨테이너 실행 (포트 매핑)
-    docker run -d -p 8080:80 --name my-web my-nginx
-
-    # 접속 확인
-    curl http://localhost:8080
-    # <h1>Hello, Docker!</h1>
-
-### 포트 매핑이 필요한 이유
-> 컨테이너는 격리된 네트워크 환경에서 실행된다.
-> -p 8080:80 은 호스트의 8080 포트를 컨테이너의 80 포트에 연결하여
-> 외부에서 컨테이너 내부 서비스에 접근할 수 있게 한다.
-
-### Docker 브리지 네트워크 구조
-
-    호스트 (Windows)
-    │
-    ├── 8080 포트 (외부 접속)
-    │       │  -p 8080:80 매핑
-    │       ▼
-    │   [docker0 브리지 네트워크]
-    │       │
-    │       └── 컨테이너 내부 80 포트 (nginx)
-
-> Docker는 기본적으로 bridge 네트워크를 사용한다.
-> 컨테이너는 이 가상 네트워크 안에 격리되어 있으며
-> -p 옵션으로 호스트 포트와 연결해야만 외부에서 접근 가능하다.
-
-브라우저 접속 화면:
-![포트매핑 접속 확인](images/browser-8080.png)
+### 4-7. 포트 매핑 및 접속 증거
+![4-7-1](images/4-7-1.png)
 
 ---
 
-## 10. 바인드 마운트
+### 4-8. Docker 볼륨 영속성 검증
 
-    # 바인드 마운트로 컨테이너 실행
-    docker run -d -p 8081:80 --name my-bind \
-      -v ${PWD}/app:/usr/share/nginx/html \
-      my-nginx
+    # Docker 볼륨을 생성, 컨테이너 연결
+![4-8-1](images/4-8-1.png)
 
-    # 호스트 파일 수정
-    echo "<h1>바인드 마운트 변경 확인!</h1>" > app/index.html
-
-    # 변경 반영 확인
-    curl http://localhost:8081
-    # <h1>바인드 마운트 변경 확인!</h1>
-
-### 바인드 마운트 동작 원리
-> 호스트의 디렉토리를 컨테이너 내부 경로에 직접 연결한다.
-> 호스트 파일을 수정하면 컨테이너 재시작 없이 즉시 반영된다.
-
----
-
-## 11. Docker 볼륨 영속성 검증
-
-    # 볼륨 생성
-    docker volume create my-vol
-    # my-vol
-
-    # 볼륨 목록 확인
-    docker volume ls
-    # DRIVER    VOLUME NAME
-    # local     my-vol
-
-    # 볼륨 상세 정보 확인
-    docker volume inspect my-vol
-    # [
-    #   {
-    #     "Name": "my-vol",
-    #     "Driver": "local",
-    #     "Mountpoint": "/var/lib/docker/volumes/my-vol/_data",
-    #     "Scope": "local"
-    #   }
-    # ]
-
-    # 컨테이너 실행 + 데이터 쓰기
-    docker run -d --name vol-test \
-      -v my-vol:/data ubuntu \
-      sh -c "echo '볼륨 영속성 테스트' > /data/test.txt && sleep 3600"
-
-    # 데이터 확인
-    docker exec vol-test cat /data/test.txt
-    # 볼륨 영속성 테스트 ✅
-
-    # 컨테이너 삭제
-    docker rm -f vol-test
-    # vol-test
-
-    # 새 컨테이너로 데이터 재확인
-    docker run --rm -v my-vol:/data ubuntu cat /data/test.txt
-    # 볼륨 영속성 테스트 ✅ (컨테이너 삭제 후에도 데이터 유지!)
+    # 컨테이너 삭제 전/후 데이터 영속성 확인
+![4-8-2](images/4-8-2.png)
 
 ### 볼륨 vs 바인드 마운트 비교
 | 구분 | 볼륨 | 바인드 마운트 |
@@ -308,7 +146,39 @@ Dockerfile
 | 주 용도 | 데이터 영속성 보장 | 개발 중 실시간 반영 |
 | 컨테이너 삭제 후 | 데이터 유지 | 데이터 유지 |
 
-## 11-1. 절대경로 vs 상대경로 선택 기준
+---
+
+### 4-9. Git 설정 및 GitHub 연동
+
+    # Git 사용자 정보/기본 브랜치 설정
+![4-9-1](images/4-9-1.png)
+
+---
+
+### 4-10. 보안 및 개인정보 보호
+    
+    # 민감 정보에 대한 마스킹
+![4-10-1](images/4-10-1.png)
+
+---
+
+## 5. 트러블슈팅
+
+### Case 1: docker --version 명령어 실패
+
+    # docker 명령어를 윈도우 shell에서 실행하여 실패
+      → wsl로 재접속하여 docker --version 명령어 실행
+![5-1](images/5-1.png)
+
+### Case 2: docker 명령어 실행시 권한 부족
+
+    # docker images 명령어 실행하였으나 권한 부족으로 실패
+      → supervisedo 추가하여 명령 수행
+![5-2](images/5-2.png)
+
+---
+
+### 절대경로 vs 상대경로 선택 기준
 
 ### 개념 비교
 | 구분 | 형식 예시 | 설명 |
@@ -332,110 +202,18 @@ Dockerfile
 | 개발 중 테스트 | ✅ 상대경로 | 빠르게 경로 변경 가능 |
 
 ### 본 프로젝트 적용 예시
-# 상대경로 사용 (로컬 개발 환경)
-docker run -d \
-  -v ${PWD}/app:/usr/share/nginx/html \  ← 로컬 경로: 상대경로
-  -p 8080:80 \
-  --name my-web my-nginx
+    # 상대경로 사용 (로컬 개발 환경)
+    docker run -d \
+    -v ${PWD}/app:/usr/share/nginx/html \  ← 로컬 경로: 상대경로
+    -p 8080:80 \
+    --name my-web my-nginx
 
-# 컨테이너 내부 경로는 절대경로 고정
-/usr/share/nginx/html  ← 컨테이너 내부: 절대경로
-
----
-
-## 12. Git 설정 및 GitHub 연동
-
-    # Git 사용자 정보 확인
-    git config --list
-    # user.name=jjoo920-source
-    # user.email=...
-    # core.defaultbranch=main
-
-    # 저장소 초기화 및 원격 연결
-    git init
-    git remote add origin https://github.com/jjoo920-source/mission1-1.git
-
-    # 커밋 및 Push
-    git add .
-    git commit -m "Mission 1-1: Docker 볼륨 영속성 검증 완료"
-    git push origin main
-    # b90de74..78a8d20  main -> main ✅
+    # 컨테이너 내부 경로는 절대경로 고정
+    /usr/share/nginx/html  ← 컨테이너 내부: 절대경로
 
 ---
 
-## 13. 포트 충돌 진단 및 해결
-
-### 포트 사용 프로세스 확인
-
-    # Windows PowerShell
-    netstat -ano | findstr :8080
-
-    # 출력 예시
-    # TCP    0.0.0.0:8080    0.0.0.0:0    LISTENING    1234
-    #                                                   ↑ PID
-
-### 포트 점유 프로세스 종료
-
-    # 위에서 확인한 PID로 프로세스 강제 종료
-    taskkill /PID 1234 /F
-
-### Docker 컨테이너 포트 충돌 시
-
-    # 실행 중인 컨테이너 확인
-    docker ps
-
-    # 충돌 컨테이너 중지 및 제거
-    docker stop my-web
-    docker rm my-web
-
-    # 포트 해제 후 재실행
-    docker run -d -p 8080:80 --name my-web my-nginx
-
----
-
-## 14. 트러블슈팅
-
-### Case 1: Merge Conflict 발생
-| 항목 | 내용 |
-|------|------|
-| 문제 | git push 시 원격과 로컬 브랜치 충돌 발생 |
-| 원인 가설 | GitHub에서 직접 README를 수정한 뒤 로컬에서도 같은 파일을 수정하여 충돌 발생 |
-| 해결 | git pull --rebase origin main 으로 원격 변경사항을 먼저 적용 후 push |
-| 결과 | 충돌 해소 및 push 성공 ✅ |
-
-### Case 2: GitHub 대소문자 파일명 충돌
-| 항목 | 내용 |
-|------|------|
-| 문제 | 로컬에서 README.md → readme.md 로 변경했으나 GitHub에 반영 안 됨 |
-| 원인 | Windows 파일시스템은 대소문자 구분 없음 (case-insensitive) |
-| 해결 | git rm --cached readme.md 로 Git 추적 해제 후 README.md 로 재등록 |
-| 결과 | GitHub에 README.md 로 정상 반영 ✅ |
-
-    # 실행 명령 순서
-    git rm --cached readme.md
-    git add README.md
-    git commit -m "fix: README.md 대소문자 파일명 충돌 해결"
-    git push origin main
-
-### Case 3: 포트 충돌로 컨테이너 실행 실패
-| 항목 | 내용 |
-|------|------|
-| 문제 | docker run -p 8080:80 실행 시 포트 이미 사용 중 오류 발생 |
-| 원인 | 이전에 실행한 컨테이너가 8080 포트를 점유 중 |
-| 해결 | docker ps 로 충돌 컨테이너 확인 후 stop/rm, 또는 다른 포트로 재실행 |
-| 결과 | 컨테이너 정상 실행 ✅ |
-
-    # 충돌 컨테이너 확인 및 제거
-    docker ps
-    docker stop my-web
-    docker rm my-web
-
-    # 포트 변경 후 재실행
-    docker run -d -p 8082:80 --name my-web my-nginx
-
----
-
-## 15. 참고 자료
+## 6. 참고 자료
 
 - Docker 공식 문서: https://docs.docker.com
 - Git 공식 문서: https://git-scm.com/doc
