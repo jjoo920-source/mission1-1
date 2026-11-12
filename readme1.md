@@ -85,31 +85,26 @@
 
 ---
 
-### 4-4. 컨테이너 실행 실습
+### 4-4. Docker 기본 운영 명령 수행
 
-### hello-world
+    # 이미지 다운로드/목록 확인, 컨테이너 목록 확인
+![4-4-1](images/4-4-1.png)
 
-    docker run hello-world
-    # Hello from Docker!
-    # This message shows that your installation appears to be working correctly.
+    # 로그 확인, 리소스 확인
+![4-4-2](images/4-4-2.png)    
 
-### ubuntu 내부 진입
+---
 
-    docker run -it ubuntu bash
+### 4-5. 컨테이너 실행 실습
 
-    # 컨테이너 내부 명령 실행
-    ls
-    # bin  boot  dev  etc  home  lib ...
-
-    pwd
-    # /
-
-    lsb_release -a
-    # Ubuntu 22.04 LTS
-
-    exit
-
+    # hello-world 실행
+![4-5-1](images/4-5-1.png)
+    
+    # ubuntu 컨테이너 실행 후 간단 명령
+![4-5-2](images/4-5-2.png)
+    
 ### attach vs exec 차이
+
 | 구분 | attach | exec |
 |------|--------|------|
 | 연결 대상 | 메인 프로세스(PID 1) | 새 프로세스 |
@@ -118,32 +113,18 @@
 
 ---
 
-### 4-5. Dockerfile 기반 커스텀 이미지
+### 4-6. Dockerfile 기반 커스텀 이미지
 
-베이스 이미지: nginx:latest
-커스텀 포인트: 정적 HTML 파일 교체
+    # 이미지 베이스
+![4-6-2](images/4-6-2.png)
+    
+    # 내가 적용한 커스텀 포인트
+![4-6-3](images/4-6-3.png)
 
-app/index.html
-
-    <h1>Hello, Docker!</h1>
-
-Dockerfile
-
-    FROM nginx:latest
-    COPY app/ /usr/share/nginx/html
-    EXPOSE 80
-
-    # 이미지 빌드
-    docker build -t my-nginx .
-    # Successfully built xxxxxxxx
-    # Successfully tagged my-nginx:latest
-
-    # 컨테이너 실행 (포트 매핑)
-    docker run -d -p 8080:80 --name my-web my-nginx
-
-    # 접속 확인
-    curl http://localhost:8080
-    # <h1>Hello, Docker!</h1>
+    # 빌드/실행 명령 + 핵심 결과
+![4-6-4](images/4-6-4.png)
+![4-6-1](images/4-6-1.png)
+![4-6-5](images/4-6-5.png)
 
 ### 포트 매핑이 필요한 이유
 > 컨테이너는 격리된 네트워크 환경에서 실행된다.
@@ -170,7 +151,7 @@ Dockerfile
 
 ---
 
-### 4-6. 바인드 마운트
+### 4-7. 바인드 마운트
 
     # 바인드 마운트로 컨테이너 실행
     docker run -d -p 8081:80 --name my-bind \
@@ -190,7 +171,7 @@ Dockerfile
 
 ---
 
-### 4-7. Docker 볼륨 영속성 검증
+### 4-8. Docker 볼륨 영속성 검증
 
     # 볼륨 생성
     docker volume create my-vol
@@ -236,7 +217,7 @@ Dockerfile
 | 주 용도 | 데이터 영속성 보장 | 개발 중 실시간 반영 |
 | 컨테이너 삭제 후 | 데이터 유지 | 데이터 유지 |
 
-### 4-8. 절대경로 vs 상대경로 선택 기준
+### 4-9. 절대경로 vs 상대경로 선택 기준
 
 ### 개념 비교
 | 구분 | 형식 예시 | 설명 |
@@ -271,7 +252,7 @@ docker run -d \
 
 ---
 
-### 4-9. Git 설정 및 GitHub 연동
+### 4-10. Git 설정 및 GitHub 연동
 
     # Git 사용자 정보 확인
     git config --list
@@ -291,7 +272,7 @@ docker run -d \
 
 ---
 
-### 4-10. 포트 충돌 진단 및 해결
+### 4-11. 포트 충돌 진단 및 해결
 
 ### 포트 사용 프로세스 확인
 
