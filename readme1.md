@@ -126,89 +126,18 @@
 ![4-6-1](images/4-6-1.png)
 ![4-6-5](images/4-6-5.png)
 
-### 포트 매핑이 필요한 이유
-> 컨테이너는 격리된 네트워크 환경에서 실행된다.
-> -p 8080:80 은 호스트의 8080 포트를 컨테이너의 80 포트에 연결하여
-> 외부에서 컨테이너 내부 서비스에 접근할 수 있게 한다.
-
-### Docker 브리지 네트워크 구조
-
-    호스트 (Windows)
-    │
-    ├── 8080 포트 (외부 접속)
-    │       │  -p 8080:80 매핑
-    │       ▼
-    │   [docker0 브리지 네트워크]
-    │       │
-    │       └── 컨테이너 내부 80 포트 (nginx)
-
-> Docker는 기본적으로 bridge 네트워크를 사용한다.
-> 컨테이너는 이 가상 네트워크 안에 격리되어 있으며
-> -p 옵션으로 호스트 포트와 연결해야만 외부에서 접근 가능하다.
-
-브라우저 접속 화면:
-![포트매핑 접속 확인](images/browser-8080.png)
-
----
-
-### 4-7. 바인드 마운트
-
-    # 바인드 마운트로 컨테이너 실행
-    docker run -d -p 8081:80 --name my-bind \
-      -v ${PWD}/app:/usr/share/nginx/html \
-      my-nginx
-
-    # 호스트 파일 수정
-    echo "<h1>바인드 마운트 변경 확인!</h1>" > app/index.html
-
-    # 변경 반영 확인
-    curl http://localhost:8081
-    # <h1>바인드 마운트 변경 확인!</h1>
-
-### 바인드 마운트 동작 원리
-> 호스트의 디렉토리를 컨테이너 내부 경로에 직접 연결한다.
-> 호스트 파일을 수정하면 컨테이너 재시작 없이 즉시 반영된다.
+### 4-7. 포트 매핑 및 접속 증거
+![4-7-1](images/4-7-1.png)
 
 ---
 
 ### 4-8. Docker 볼륨 영속성 검증
 
-    # 볼륨 생성
-    docker volume create my-vol
-    # my-vol
+    # Docker 볼륨을 생성, 컨테이너 연결
+![4-8-1](images/4-8-1.png)
 
-    # 볼륨 목록 확인
-    docker volume ls
-    # DRIVER    VOLUME NAME
-    # local     my-vol
-
-    # 볼륨 상세 정보 확인
-    docker volume inspect my-vol
-    # [
-    #   {
-    #     "Name": "my-vol",
-    #     "Driver": "local",
-    #     "Mountpoint": "/var/lib/docker/volumes/my-vol/_data",
-    #     "Scope": "local"
-    #   }
-    # ]
-
-    # 컨테이너 실행 + 데이터 쓰기
-    docker run -d --name vol-test \
-      -v my-vol:/data ubuntu \
-      sh -c "echo '볼륨 영속성 테스트' > /data/test.txt && sleep 3600"
-
-    # 데이터 확인
-    docker exec vol-test cat /data/test.txt
-    # 볼륨 영속성 테스트 ✅
-
-    # 컨테이너 삭제
-    docker rm -f vol-test
-    # vol-test
-
-    # 새 컨테이너로 데이터 재확인
-    docker run --rm -v my-vol:/data ubuntu cat /data/test.txt
-    # 볼륨 영속성 테스트 ✅ (컨테이너 삭제 후에도 데이터 유지!)
+    # 컨테이너 삭제 전/후 데이터 영속성 확인
+![4-8-2](images/4-8-2.png)
 
 ### 볼륨 vs 바인드 마운트 비교
 | 구분 | 볼륨 | 바인드 마운트 |
@@ -217,7 +146,39 @@
 | 주 용도 | 데이터 영속성 보장 | 개발 중 실시간 반영 |
 | 컨테이너 삭제 후 | 데이터 유지 | 데이터 유지 |
 
-### 4-9. 절대경로 vs 상대경로 선택 기준
+---
+
+### 4-9. Git 설정 및 GitHub 연동
+
+    # Git 사용자 정보/기본 브랜치 설정
+![4-9-1](images/4-9-1.png)
+
+---
+
+### 4-10. 보안 및 개인정보 보호
+    
+    # 민감 정보에 대한 마스킹
+![4-10-1](images/4-10-1.png)
+
+---
+
+## 5. 트러블슈팅
+
+### Case 1: docker --version 명령어 실패
+
+    # docker 명령어를 윈도우 shell에서 실행하여 실패
+      → wsl로 재접속하여 docker --version 명령어 실행
+![5-1](images/5-1.png)
+
+### Case 2: docker 명령어 실행시 권한 부족
+
+    # docker images 명령어 실행하였으나 권한 부족으로 실패
+      → supervisedo 추가하여 명령 수행
+![5-2](images/5-2.png)
+
+---
+
+### 절대경로 vs 상대경로 선택 기준
 
 ### 개념 비교
 | 구분 | 형식 예시 | 설명 |
@@ -241,106 +202,14 @@
 | 개발 중 테스트 | ✅ 상대경로 | 빠르게 경로 변경 가능 |
 
 ### 본 프로젝트 적용 예시
-# 상대경로 사용 (로컬 개발 환경)
-docker run -d \
-  -v ${PWD}/app:/usr/share/nginx/html \  ← 로컬 경로: 상대경로
-  -p 8080:80 \
-  --name my-web my-nginx
+    # 상대경로 사용 (로컬 개발 환경)
+    docker run -d \
+    -v ${PWD}/app:/usr/share/nginx/html \  ← 로컬 경로: 상대경로
+    -p 8080:80 \
+    --name my-web my-nginx
 
-# 컨테이너 내부 경로는 절대경로 고정
-/usr/share/nginx/html  ← 컨테이너 내부: 절대경로
-
----
-
-### 4-10. Git 설정 및 GitHub 연동
-
-    # Git 사용자 정보 확인
-    git config --list
-    # user.name=jjoo920-source
-    # user.email=...
-    # core.defaultbranch=main
-
-    # 저장소 초기화 및 원격 연결
-    git init
-    git remote add origin https://github.com/jjoo920-source/mission1-1.git
-
-    # 커밋 및 Push
-    git add .
-    git commit -m "Mission 1-1: Docker 볼륨 영속성 검증 완료"
-    git push origin main
-    # b90de74..78a8d20  main -> main ✅
-
----
-
-### 4-11. 포트 충돌 진단 및 해결
-
-### 포트 사용 프로세스 확인
-
-    # Windows PowerShell
-    netstat -ano | findstr :8080
-
-    # 출력 예시
-    # TCP    0.0.0.0:8080    0.0.0.0:0    LISTENING    1234
-    #                                                   ↑ PID
-
-### 포트 점유 프로세스 종료
-
-    # 위에서 확인한 PID로 프로세스 강제 종료
-    taskkill /PID 1234 /F
-
-### Docker 컨테이너 포트 충돌 시
-
-    # 실행 중인 컨테이너 확인
-    docker ps
-
-    # 충돌 컨테이너 중지 및 제거
-    docker stop my-web
-    docker rm my-web
-
-    # 포트 해제 후 재실행
-    docker run -d -p 8080:80 --name my-web my-nginx
-
----
-
-## 5. 트러블슈팅
-
-### Case 1: Merge Conflict 발생
-| 항목 | 내용 |
-|------|------|
-| 문제 | git push 시 원격과 로컬 브랜치 충돌 발생 |
-| 원인 가설 | GitHub에서 직접 README를 수정한 뒤 로컬에서도 같은 파일을 수정하여 충돌 발생 |
-| 해결 | git pull --rebase origin main 으로 원격 변경사항을 먼저 적용 후 push |
-| 결과 | 충돌 해소 및 push 성공 ✅ |
-
-### Case 2: GitHub 대소문자 파일명 충돌
-| 항목 | 내용 |
-|------|------|
-| 문제 | 로컬에서 README.md → readme.md 로 변경했으나 GitHub에 반영 안 됨 |
-| 원인 | Windows 파일시스템은 대소문자 구분 없음 (case-insensitive) |
-| 해결 | git rm --cached readme.md 로 Git 추적 해제 후 README.md 로 재등록 |
-| 결과 | GitHub에 README.md 로 정상 반영 ✅ |
-
-    # 실행 명령 순서
-    git rm --cached readme.md
-    git add README.md
-    git commit -m "fix: README.md 대소문자 파일명 충돌 해결"
-    git push origin main
-
-### Case 3: 포트 충돌로 컨테이너 실행 실패
-| 항목 | 내용 |
-|------|------|
-| 문제 | docker run -p 8080:80 실행 시 포트 이미 사용 중 오류 발생 |
-| 원인 | 이전에 실행한 컨테이너가 8080 포트를 점유 중 |
-| 해결 | docker ps 로 충돌 컨테이너 확인 후 stop/rm, 또는 다른 포트로 재실행 |
-| 결과 | 컨테이너 정상 실행 ✅ |
-
-    # 충돌 컨테이너 확인 및 제거
-    docker ps
-    docker stop my-web
-    docker rm my-web
-
-    # 포트 변경 후 재실행
-    docker run -d -p 8082:80 --name my-web my-nginx
+    # 컨테이너 내부 경로는 절대경로 고정
+    /usr/share/nginx/html  ← 컨테이너 내부: 절대경로
 
 ---
 
